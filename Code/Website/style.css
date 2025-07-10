@@ -1,0 +1,70 @@
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b3e5fc 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #0d47a1;
+            margin-top: 40px;
+            text-shadow: 0 2px 8px rgba(255,255,255,0.4);
+        }
+        input[type="file"] {
+            margin: 30px 0 40px 0;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.4);
+            box-shadow: 0 4px 24px rgba(30,144,255,0.10);
+            backdrop-filter: blur(6px);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        #dashboard {
+            width: 100vw;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            padding-top: 50px;
+        }
+        .dashboard-section {
+            width: 40%;
+            min-width: 340px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255,255,255,0.28);
+            padding: 32px 24px 24px 24px;
+            margin-bottom: 0;
+            margin-top: 0;
+            transition: box-shadow 0.2s;
+        }
+        .dashboard-section:hover {
+            box-shadow: 0 12px 36px 0 rgba(31, 38, 135, 0.24);
+        }
+        .dashboard-section h2 {
+            color: #1976d2;
+            margin-top: 0;
+            margin-bottom: 18px;
+            text-shadow: 0 1px 6px rgba(255,255,255,0.3);
+            font-weight: 600;
+        }
+        .plot-container {
+            margin-top: 12px;
+        }
+        @media (max-width: 900px) {
+            .dashboard-section {
+                width: 90%;
+                margin: 0 auto 32px auto;
+            }
+            #dashboard {
+                gap: 24px;
+            }
+        }

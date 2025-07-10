@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Theoretical Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+    .theory-section {
+        width: 40%;
+        min-width: 700px;
+        background: rgba(255,255,255,0.18);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1.5px solid rgba(255,255,255,0.28);
+        padding: 32px 24px 24px 24px;
+        margin-bottom: 100px;
+        margin-top: 0;
+        transition: box-shadow 0.2s;
+        text-align: justify;
+    }
+    .theory-section h2 {
+        color: #1976d2;
+        margin-top: 0;
+        margin-bottom: 18px;
+        text-shadow: 0 1px 6px rgba(255,255,255,0.3);
+        font-weight: 600;
+    }
+    .theory-section ul {
+        margin-top: 18px;
+        margin-bottom: 18px;
+    }
+    .theory-section li {
+        margin-bottom: 10px;
+    }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="index.html">Dashboard</a>
+        <a href="mathematical-analysis.html">Mathematical Analysis</a>
+        <a href="fraud-analysis.html">Fraud Analysis</a>
+        <a href="amount-trends.html">Amount Trends</a>
+        <a href="feature-importance.html">Feature Importance</a>
+        <a href="theoretical-analysis.html" class="active">Theoretical Analysis</a>
+    </nav>
+    <div class="main-content">
+        <h1>Theoretical Analysis</h1>
+        <div class="theory-section">
+            <h2>About Credit Card Fraud Detection</h2>
+            <ul>
+                <li>
+                    <strong>Imbalanced Data Problem:</strong> In most real-world credit card datasets, fraudulent transactions are extremely rare compared to legitimate ones. This imbalance challenges standard machine learning algorithms, which may be biased toward predicting the majority class.
+                </li>
+                <li>
+                    <strong>Feature Engineering:</strong> The anonymized features (V1–V28) are typically the result of a PCA transformation to protect sensitive information. Understanding the statistical properties and relationships of these features is crucial for effective fraud detection.
+                </li>
+                <li>
+                    <strong>Evaluation Metrics:</strong> Traditional accuracy is not sufficient for imbalanced datasets. Metrics such as precision, recall, F1-score, and especially the Area Under the ROC Curve (AUC-ROC) provide better insight into model performance.
+                </li>
+                <li>
+                    <strong>Fraud Patterns:</strong> Fraudulent transactions may exhibit unique patterns, such as occurring at unusual times, involving atypical amounts, or showing distinct feature correlations. Visualization and statistical analysis help uncover these patterns.
+                </li>
+                <li>
+                    <strong>Modeling Approaches:</strong> Common approaches include supervised learning (logistic regression, decision trees, random forests, gradient boosting, neural networks) and unsupervised methods (anomaly detection, clustering) for cases with limited labeled data.
+                </li>
+                <li>
+                    <strong>Data Privacy:</strong> Anonymization and secure handling of sensitive financial data are essential for compliance and ethical analysis.
+                </li>
+            </ul>
+        </div>
+        <div class="theory-section">
+            <h2>Best Practices for Analysis</h2>
+            <ul>
+                <li>
+                    <strong>Resampling Techniques:</strong> Use oversampling (SMOTE) or undersampling to balance the dataset for training.
+                </li>
+                <li>
+                    <strong>Cross-Validation:</strong> Employ stratified cross-validation to ensure robust evaluation across both classes.
+                </li>
+                <li>
+                    <strong>Feature Importance:</strong> Use model-based or permutation importance to identify which features most influence fraud predictions.
+                </li>
+                <li>
+                    <strong>Explainability:</strong> Apply explainable AI methods (e.g., SHAP, LIME) to interpret model decisions and build trust.
+                </li>
+            </ul>
+        </div>
+        <div class="theory-section">
+            <h2>References</h2>
+            <ul>
+                <li>
+                    Credit Card Fraud Detection: A Realistic Modeling and a Novel Learning Strategy (<em>IEEE Access</em>)
+                </li>
+                <li>
+                    Credit Card Fraud Detection using Machine Learning: A Survey (<em>International Journal of Computer Applications</em>)
+                </li>
+                <li>
+                    Fraud Detection in Credit Card Transactions using Machine Learning Algorithms (<em>Elsevier Procedia Computer Science</em>)
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
