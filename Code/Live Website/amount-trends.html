@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Amount Trends</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="index.html">Dashboard</a>
+        <a href="mathematical-analysis.html">Mathematical Analysis</a>
+        <a href="fraud-analysis.html">Fraud Analysis</a>
+        <a href="amount-trends.html" class="active">Amount Trends</a>
+        <a href="feature-importance.html">Feature Importance</a>
+        <a href="theoretical-analysis.html">Theoretical Analysis</a>
+    </nav>
+    <div class="main-content">
+        <h1>Amount Trends</h1>
+        <input type="file" id="csvFile" accept=".csv" />
+        <div class="dashboard-section">
+            <h2>Transaction Amount Distribution</h2>
+            <div id="amount-distribution" class="plot-container"></div>
+        </div>
+        <div class="dashboard-section">
+            <h2>Average Transaction Amount Over Time</h2>
+            <div id="avg-amount-trend" class="plot-container"></div>
+        </div>
+    </div>
+    <script>
+    document.getElementById('csvFile').addEventListener('change', function (e) {
+        if (!e.target.files.length) return;
+        Papa.parse(e.target.files[0], {
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const data = results.data;
+                renderAmountTrends(data);
+            }
+        });
+    });
+
+    function renderAmountTrends(data) {
+        const columns = Object.keys(data[0]);
+        const amountCol = columns.find(c => c.toLowerCase() === 'amount');
+        const classCol = columns.find(c => c.toLowerCase() === 'class');
+        const timeCol = columns.find(c => c.toLowerCase() === 'time');
+
+        // Amount Distribution
+        const amounts = data.map(row => row[amountCol]);
+        const classes = data.map(row => row[classCol]);
+        Plotly.newPlot('amount-distribution', [
+            {
+                x: amounts.filter((_, i) => classes[i] == 0),
+                type: 'histogram',
+                name: 'Non-Fraudulent',
+                marker: { color: '#2ecc40' },
+                opacity: 0.7
+            },
+            {
+                x: amounts.filter((_, i) => classes[i] == 1),
+                type: 'histogram',
+                name: 'Fraudulent',
+                marker: { color: '#ff4136' },
+                opacity: 0.7
+            }
+        ], {
+            barmode: 'overlay',
+            title: 'Transaction Amount Distribution',
+            xaxis: { title: 'Amount' },
+            yaxis: { title: 'Count' },
+            paper_bgcolor: 'rgba(255,255,255,0.0)',
+            plot_bgcolor: 'rgba(255,255,255,0.0)'
+        });
+
+        // Average Amount Over Time
+        let timeBuckets = {};
+        data.forEach(row => {
+            let bucket = Math.floor(row[timeCol] / 3600);
+            if (!timeBuckets[bucket]) timeBuckets[bucket] = { sum: 0, count: 0 };
+            timeBuckets[bucket].sum += row[amountCol];
+            timeBuckets[bucket].count += 1;
+        });
+        const buckets = Object.keys(timeBuckets).map(Number).sort((a, b) => a - b);
+        Plotly.newPlot('avg-amount-trend', [{
+            x: buckets,
+            y: buckets.map(b => timeBuckets[b].sum / timeBuckets[b].count),
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Average Amount',
+            line: { color: '#1976d2' }
+        }], {
+            title: 'Average Transaction Amount Over Time (Hourly)',
+            xaxis: { title: 'Hour' },
+            yaxis: { title: 'Average Amount' },
+            paper_bgcolor: 'rgba(255,255,255,0.0)',
+            plot_bgcolor: 'rgba(255,255,255,0.0)'
+        });
+    }
+    </script>
+</body>
+</html>

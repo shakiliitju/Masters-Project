@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fraud Analysis</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <a href="index.html">Dashboard</a>
+      <a href="mathematical-analysis.html">Mathematical Analysis</a>
+      <a href="fraud-analysis.html" class="active">Fraud Analysis</a>
+      <a href="amount-trends.html">Amount Trends</a>
+      <a href="feature-importance.html">Feature Importance</a>
+      <a href="theoretical-analysis.html">Theoretical Analysis</a>
+    </nav>
+    <div class="main-content">
+      <h1>Fraud Analysis</h1>
+      <input type="file" id="csvFile" accept=".csv" />
+      <div class="dashboard-section">
+        <h2>Fraudulent vs. Non-Fraudulent Transactions</h2>
+        <div id="class-distribution" class="plot-container"></div>
+      </div>
+      <div class="dashboard-section">
+        <h2>Fraudulent Transaction Trends Over Time</h2>
+        <div id="fraud-time-trends" class="plot-container"></div>
+      </div>
+    </div>
+    <script>
+      document
+        .getElementById("csvFile")
+        .addEventListener("change", function (e) {
+          if (!e.target.files.length) return;
+          Papa.parse(e.target.files[0], {
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+              const data = results.data;
+              renderFraudAnalysis(data);
+            },
+          });
+        });
+
+      function renderFraudAnalysis(data) {
+        const columns = Object.keys(data[0]);
+        const classCol = columns.find((c) => c.toLowerCase() === "class");
+        const timeCol = columns.find((c) => c.toLowerCase() === "time");
+
+        // Class Distribution
+        const classCounts = data.reduce((acc, row) => {
+          acc[row[classCol]] = (acc[row[classCol]] || 0) + 1;
+          return acc;
+        }, {});
+        Plotly.newPlot(
+          "class-distribution",
+          [
+            {
+              x: Object.keys(classCounts).map((cl) =>
+                cl == 1 ? "Fraudulent" : "Non-Fraudulent"
+              ),
+              y: Object.values(classCounts),
+              type: "bar",
+              marker: { color: ["#ff4136", "#2ecc40"] },
+            },
+          ],
+          {
+            title: "Transaction Class Distribution",
+            xaxis: { title: "Class" },
+            yaxis: { title: "Count" },
+            paper_bgcolor: "rgba(255,255,255,0.0)",
+            plot_bgcolor: "rgba(255,255,255,0.0)",
+          }
+        );
+
+        // Fraudulent Transaction Trends Over Time
+        let timeBuckets = {};
+        data
+          .filter((row) => row[classCol] == 1)
+          .forEach((row) => {
+            let bucket = Math.floor(row[timeCol] / 3600);
+            if (!timeBuckets[bucket]) timeBuckets[bucket] = 0;
+            timeBuckets[bucket]++;
+          });
+        const buckets = Object.keys(timeBuckets)
+          .map(Number)
+          .sort((a, b) => a - b);
+        Plotly.newPlot(
+          "fraud-time-trends",
+          [
+            {
+              x: buckets,
+              y: buckets.map((b) => timeBuckets[b]),
+              type: "scatter",
+              mode: "lines+markers",
+              name: "Fraudulent",
+              line: { color: "#ff4136" },
+            },
+          ],
+          {
+            title: "Fraudulent Transactions Over Time (Hourly)",
+            xaxis: { title: "Hour" },
+            yaxis: { title: "Fraudulent Count" },
+            paper_bgcolor: "rgba(255,255,255,0.0)",
+            plot_bgcolor: "rgba(255,255,255,0.0)",
+          }
+        );
+      }
+    </script>
+  </body>
+</html>

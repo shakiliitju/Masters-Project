@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mathematical Analysis</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .math-section {
+        width: 90%;
+        max-width: 900px;
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1.5px solid rgba(255, 255, 255, 0.28);
+        padding: 32px 24px 24px 24px;
+        margin-bottom: 40px;
+        margin-top: 0;
+        transition: box-shadow 0.2s;
+        overflow-x: auto;
+      }
+      .math-section h2 {
+        color: #1976d2;
+        margin-top: 0;
+        margin-bottom: 18px;
+        text-shadow: 0 1px 6px rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+      }
+      table.math-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(31, 38, 135, 0.07);
+        margin-top: 20px;
+      }
+      table.math-table th,
+      table.math-table td {
+        padding: 10px 8px;
+        text-align: center;
+        border-bottom: 1px solid rgba(30, 144, 255, 0.12);
+      }
+      table.math-table th {
+        background: rgba(30, 144, 255, 0.09);
+        color: #0d47a1;
+        font-weight: bold;
+      }
+      table.math-table tr:last-child td {
+        border-bottom: none;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <a href="index.html">Dashboard</a>
+      <a href="mathematical-analysis.html" class="active">Mathematical Analysis</a>
+      <a href="fraud-analysis.html">Fraud Analysis</a>
+      <a href="amount-trends.html">Amount Trends</a>
+      <a href="feature-importance.html">Feature Importance</a>
+      <a href="theoretical-analysis.html">Theoretical Analysis</a>
+    </nav>
+    <div class="main-content">
+      <h1>Mathematical Analysis Table</h1>
+      <div class="math-section">
+        <h2>Feature Statistics</h2>
+        <div id="math-table-container">
+          <!-- The message or table will appear here -->
+          <p style="color: #1976d2">Waiting for data from Dashboard...</p>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const stored = localStorage.getItem("creditcard_csv_data");
+        if (stored) {
+          const data = JSON.parse(stored);
+          renderMathTable(data);
+        } else {
+          document.getElementById("math-table-container").innerHTML =
+            '<p style="color:#ff4136;">No data found. Please upload a CSV file on the Dashboard page first.</p>';
+        }
+      });
+
+      function renderMathTable(data) {
+        if (!data || !data.length) {
+          document.getElementById("math-table-container").innerHTML =
+            '<p style="color:#ff4136;">No data found in file.</p>';
+          return;
+        }
+        const columns = Object.keys(data[0]);
+        const classCol = columns.find((c) => c.toLowerCase() === "class");
+        const featureCols = columns.filter(
+          (c) =>
+            /^v\d+$/i.test(c) || ["amount", "time"].includes(c.toLowerCase())
+        );
+
+        // Prepare class array for correlation
+        const classArr = data.map((row) => row[classCol]);
+
+        // Helper functions
+        function mean(arr) {
+          return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+        function std(arr, m) {
+          return Math.sqrt(
+            arr.reduce((a, b) => a + Math.pow(b - m, 2), 0) / arr.length
+          );
+        }
+        function corr(x, y) {
+          const mx = mean(x),
+            my = mean(y);
+          const sx = std(x, mx),
+            sy = std(y, my);
+          if (sx === 0 || sy === 0) return 0;
+          const cov =
+            x.reduce((a, xi, i) => a + (xi - mx) * (y[i] - my), 0) / x.length;
+          return cov / (sx * sy);
+        }
+        function min(arr) {
+          return Math.min(...arr);
+        }
+        function max(arr) {
+          return Math.max(...arr);
+        }
+
+        // Build table rows
+        let rows = featureCols
+          .map((col) => {
+            const arr = data.map((row) => row[col]);
+            const m = mean(arr);
+            const s = std(arr, m);
+            const mn = min(arr);
+            const mx = max(arr);
+            const c = corr(arr, classArr);
+            return `<tr>
+                <td>${col}</td>
+                <td>${m.toFixed(5)}</td>
+                <td>${s.toFixed(5)}</td>
+                <td>${mn.toFixed(5)}</td>
+                <td>${mx.toFixed(5)}</td>
+                <td>${c.toFixed(5)}</td>
+            </tr>`;
+          })
+          .join("");
+
+        document.getElementById("math-table-container").innerHTML = `
+            <table class="math-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Mean</th>
+                        <th>Standard Deviation</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                        <th>Correlation with Class</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        `;
+      }
+    </script>
+  </body>
+</html>

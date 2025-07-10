@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Credit Card Fraud Detection Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <style></style>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <a href="index.html" class="active">Dashboard</a>
+      <a href="mathematical-analysis.html">Mathematical Analysis</a>
+      <a href="fraud-analysis.html">Fraud Analysis</a>
+      <a href="amount-trends.html">Amount Trends</a>
+      <a href="feature-importance.html">Feature Importance</a>
+      <a href="theoretical-analysis.html">Theoretical Analysis</a>
+    </nav>
+    <div class="main-content">
+      <h1>📊 Credit Card Fraud Detection Dashboard</h1>
+      <input type="file" id="csvFile" accept=".csv" />
+      <div class="dashboard-section" id="overview-section">
+        <div class="overview-sections">
+          <h2>Overview</h2>
+          <p class="overview-desc" id="overview-desc">
+            Upload your credit card CSV data to interactively explore key
+            metrics. Use the sidebar to navigate to specialized analyses.
+          </p>
+          <div class="overview-processing" id="overview-processing">
+            <div class="overview-spinner"></div>
+            <div class="overview-text">Processing your data...</div>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard-section">
+        <h2>1. Fraudulent vs. Non-Fraudulent Transactions</h2>
+        <div id="class-distribution" class="plot-container"></div>
+      </div>
+      <div class="dashboard-section">
+        <h2>2. Transaction Amount Distribution</h2>
+        <div id="amount-distribution" class="plot-container"></div>
+      </div>
+      <div class="dashboard-section">
+        <h2>3. Time-Based Trends</h2>
+        <div id="time-trends" class="plot-container"></div>
+      </div>
+      <div class="dashboard-section">
+        <h2>4. Correlation Heatmap of Features</h2>
+        <div id="correlation-heatmap" class="plot-container"></div>
+      </div>
+      <div class="dashboard-section">
+        <h2>5. Top Contributing Features for Fraudulent Transactions</h2>
+        <div id="feature-importance" class="plot-container"></div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
